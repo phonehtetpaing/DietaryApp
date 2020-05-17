@@ -1,15 +1,28 @@
-# A Blank PhoneGap App
+# Dietary App
 
-## Usage
+## Used Technologies
+Firebase
+PhoneGap
+Html, CSS, Javascript 
+   
+# PhoneGap CLI
+## Installation 
+```
+npm install -g phonegap@latest
+```
 
-### PhoneGap CLI
+## Create Default Project
+```
+phonegap create myApp --id "org.myapp.sample" --name "appSample"
+```
 
-    $ phonegap create my-app --template blank
+## Preview on the app 
+```
+phonegap serve
+```
+## Create Application (iOS / Android / Windows )
+Go to https://build.phonegap.com/ 
+Upload the zip file or upload to the github
 
-### Desktop
-
-In your browser, open the file:
-
-    /www/index.html
-
-# DietaryApp
+### Have fun  🎉 🎉 🎉
+Docs - http://docs.phonegap.com/
