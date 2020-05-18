@@ -13,17 +13,17 @@
 		<center><div class="col-md-4">
 			<form class="form-group">
 				<label for="exampleInputEmail1">Food Name</label>
-				<input type="text" class="form-control" id="food_name" name="food_name" placeholder="FKK"/>
+				<input type="text" class="form-control" id="food_name" name="food_name" placeholder="FKK" required/>
 				<label for="exampleInputEmail1">Food Group</label>
-				<input type="text" class="form-control" id="food_group" name="food_group" placeholder="Diary"/>
+				<input type="text" class="form-control" id="food_group" name="food_group" placeholder="Diary" required/>
 				<label for="exampleInputEmail1">Date</label>
-				<input type="date" class="form-control" id="date" name="Date" placeholder="Enter Date"/><br>
+				<input type="date" class="form-control" id="date" name="Date" placeholder="Enter Date" required/><br>
 				<label for="exampleInputEmail1">Meal Type</label>
 				<input type="text" class="form-control" id="meal_type" name="meal_type" placeholder="Breakfast"/><br>
 				<label for="exampleInputEmail1">Note</label>
 				<input type="text" class="form-control" id="note" name="note" placeholder="Note"/><br>
 				<label for="exampleInputEmail1">Reporter Name</label>
-				<input type="text" class="form-control" id="reporter_name" name="reporter_name" placeholder="Name of reporter"/><br>
+				<input type="text" class="form-control" id="reporter_name" name="reporter_name" placeholder="Name of reporter" required/><br>
 				<button class="btn btn-success" id="addbtn">Add Data</button>
 				<button class="btn btn-primary" id="updatebtn">Update Data</button>
 			</form>
@@ -49,19 +49,29 @@
         var updateID=0;
         get_all_data();
         $( "#addbtn" ).click(function() {
-          add();
-          alert("Add Succesfuly");
+          var food_name = document.getElementById("food_name");
+          var food_group=document.getElementById("food_group");
+          var date=document.getElementById("date");
+          var reporter_name=document.getElementById("reporter_name");
+          if (food_name.checkValidity() && food_group.checkValidity() && date.checkValidity() && reporter_name.checkValidity()
+){
+            add();
+            alert("Add Succesfuly");
+          }
         });
 
 		    $( "#updatebtn" ).click(function() {
-          var food_name=document.getElementById("food_name").value;
-          var food_group=document.getElementById("food_group").value;
-          var date=document.getElementById("date").value;
-          var meal_type=document.getElementById("meal_type").value;
-          var note=document.getElementById("note").value;
-          var reporter_name=document.getElementById("reporter_name").value;
-		    	update_data(food_name,food_group,date,meal_type,note,reporter_name, updateID);
-		    	alert("Update Succesfuly");
+          var food_name = document.getElementById("food_name");
+          var food_group=document.getElementById("food_group");
+          var date=document.getElementById("date");
+          var reporter_name=document.getElementById("reporter_name");
+          if (food_name.checkValidity() && food_group.checkValidity() && date.checkValidity() && reporter_name.checkValidity()
+){
+            var meal_type=document.getElementById("meal_type").value;
+            var note=document.getElementById("note").value;
+		    	  update_data(food_name.value,food_group.value,date.value,meal_type,note,reporter_name.value, updateID);
+		    	  alert("Update Succesfuly");
+          }
 		    });
 		    $(document).on('click','#btnDelete',function(e){
 		    	//alert(e.target.value);
@@ -123,7 +133,6 @@
         });
       }
 		  function update_data(food_name,food_group,date,meal_type,note,reporter_name,key){
-        alert('dfasdf')
 		  	database.ref('foods/' + key).update({
           food_name: food_name,
           food_group: food_group,
