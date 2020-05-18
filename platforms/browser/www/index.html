@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title>Blank App</title>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" integrity="sha384-PDle/QlgIONtM1aqA2Qemk5gPOE7wFq8+Em+G/hmo5Iq0CCmYZLv3fVRDJ4MMwEA" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    </head>
+    <body>
+      
+		<center><div class="col-md-4">
+			<form class="form-group">
+				<label for="exampleInputEmail1">Food Name</label>
+				<input type="text" class="form-control" id="food_name" name="food_name" placeholder="FKK"/>
+				<label for="exampleInputEmail1">Food Group</label>
+				<input type="text" class="form-control" id="food_group" name="food_group" placeholder="Diary"/>
+				<label for="exampleInputEmail1">Date</label>
+				<input type="date" class="form-control" id="date" name="Date" placeholder="Enter Date"/><br>
+				<label for="exampleInputEmail1">Meal Type</label>
+				<input type="text" class="form-control" id="meal_type" name="meal_type" placeholder="Breakfast"/><br>
+				<label for="exampleInputEmail1">Note</label>
+				<input type="text" class="form-control" id="note" name="note" placeholder="Note"/><br>
+				<label for="exampleInputEmail1">Reporter Name</label>
+				<input type="text" class="form-control" id="reporter_name" name="reporter_name" placeholder="Name of reporter"/><br>
+				<button class="btn btn-success" id="addbtn">Add Data</button>
+				<button class="btn btn-primary" id="updatebtn">Update Data</button>
+			</form>
+		</div></center>
+		<center><div class="col-md-6">
+			<table cLass="table table-striped" border="2px" width="100%" id="myTable">
+			<tr>
+        <th>ID</th>
+				<th>Food Name</th>
+				<th>Food Group</th>
+				<th>Date</th>
+				<th>Meal Type</th>
+				<th>Note</th>
+				<th>Reporter Name</th>
+				<th colspan='2'>Action</th>
+			</tr>	
+		</table>
+		</div></center>
+    <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-database.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var updateID=0;
+        get_all_data();
+        $( "#addbtn" ).click(function() {
+          add();
+          alert("Add Succesfuly");
+        });
+
+		    $( "#updatebtn" ).click(function() {
+          var food_name=document.getElementById("food_name").value;
+          var food_group=document.getElementById("food_group").value;
+          var date=document.getElementById("date").value;
+          var meal_type=document.getElementById("meal_type").value;
+          var note=document.getElementById("note").value;
+          var reporter_name=document.getElementById("reporter_name").value;
+		    	update_data(food_name,food_group,date,meal_type,note,reporter_name, updateID);
+		    	alert("Update Succesfuly");
+		    });
+		    $(document).on('click','#btnDelete',function(e){
+		    	//alert(e.target.value);
+		    	var a=database.ref('foods/' + e.target.value).remove().then(function(){
+		    		location.reload();
+		    	});
+		    	console.log(a);
+		    	//delete_data(e.target.value);
+
+		    	alert("Delete Succesfuly");
+		    });
+		    $(document).on('click','#btnUpdate',function(e){
+		    	// alert(e.target.value);
+		    	updateID=e.target.value;
+		    	get_data_by_id(e.target.value);
+
+		    });
+
+      });
+      var nextkey =0;
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyDxZnmLQ7yXIx4Y-k0V_ti8JZwDrJMKmmM",
+        authDomain: "dietaryz-2f925.firebaseapp.com",
+        databaseURL: "https://dietaryz-2f925.firebaseio.com",
+        projectId: "dietaryz-2f925",
+        storageBucket: "dietaryz-2f925.appspot.com",
+        messagingSenderId: "63234955451",
+        appId: "1:63234955451:web:52371b099390aea2d8319e"
+      };
+      firebase.initializeApp(firebaseConfig);
+      var database = firebase.database();
+      function add(){
+        var food_name=document.getElementById("food_name").value;
+        var food_group=document.getElementById("food_group").value;
+        var date=document.getElementById("date").value;
+        var meal_type=document.getElementById("meal_type").value;
+        var note=document.getElementById("note").value;
+        var reporter_name=document.getElementById("reporter_name").value;
+        database.ref('foods').once("value").then(function(snapshot) {
+          if(snapshot.numChildren()==0){
+            nextkey = 1;
+          }
+          new_data(food_name,food_group,date,meal_type,note,reporter_name,nextkey);
+        });
+        database.ref('foods').on('child_added', function(data) {
+          var lastkey = data.key;
+          nextkey = parseInt(lastkey)+1;
+        });
+      }
+      function new_data(food_name,food_group,date,meal_type,note,reporter_name,key){
+        database.ref('foods/' + key).set({
+          food_name: food_name,
+          food_group: food_group,
+          date: date,
+          meal_type: meal_type,
+          note: note,
+          reporter_name: reporter_name,
+        });
+      }
+		  function update_data(food_name,food_group,date,meal_type,note,reporter_name,key){
+        alert('dfasdf')
+		  	database.ref('foods/' + key).update({
+          food_name: food_name,
+          food_group: food_group,
+          date: date,
+          meal_type: meal_type,
+          note: note,
+          reporter_name: reporter_name,
+		  	});
+		  }
+		  function get_data_by_id(id){
+		  	database.ref('foods/'+id).once("value").then(function(snapshot){
+		  		var data=snapshot;
+		  		$("#food_name").val(data.val().food_name);
+		  		$("#food_group").val(data.val().food_group);		
+		  		$("#date").val(data.val().date);		
+		  		$("#meal_type").val(data.val().meal_type);
+		  		$("#note").val(data.val().note);		
+		  		$("#reporter_name").val(data.val().reporter_name);		
+		  	});
+
+		  }
+      function get_all_data(){
+        var leadsRef = database.ref('foods');
+        var id=0;
+        leadsRef.on('value', function(snapshot) {
+          var content='';
+          snapshot.forEach(function(childSnapshot) {
+            var data = childSnapshot.val();
+            var v = Object.keys(snapshot.val())[id];
+            content +='<tr>';
+            content += '<td>' + (id+1)+ '</td>';
+            content += '<td>' + data.food_name + '</td>';
+            content += '<td>' + data.food_group+ '</td>';
+            content += '<td>' + data.date+ '</td>';
+            content += '<td>' + data.meal_type + '</td>';
+            content += '<td>' + data.note + '</td>';
+            content += '<td>' + data.reporter_name + '</td>';
+            content += '<td><button class="btn btn-primary" value='+v+' id="btnUpdate">Update</button></td>';
+            content += '<td><button class="btn btn-danger" value='+v+' id="btnDelete">Delete</button></td>';
+            content += '</tr>';
+            id=id+1;
+          });
+          $('#myTable').append(content);
+        });
+      }
+      </script>
+    </body>
+</html>
